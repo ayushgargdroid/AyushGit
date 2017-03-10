@@ -39,9 +39,11 @@ class BigController():
 		goY = 0
 		goR = 0
 		goT = 0
-
+		
+		print 'a'
 		while True:
 			t = ser.readline()
+			print t
 			if t[0] == 'x':
 				x = t[1:4]
 				goX = 1
@@ -197,6 +199,9 @@ class BigController():
 				leftr = int(leftr)
 				rightf = int(rightf)
 				rightr = int(rightr)
+
+				print 'Leftf :%s Rightf :%s'%(leftf,rightf)
+				print 'Leftr :%s Rightr :%s'%(leftr,rightr)
 
 				p1.ChangeDutyCycle(leftf)
 				p2.ChangeDutyCycle(leftr)
