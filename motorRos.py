@@ -6,7 +6,7 @@ import serial
 class BigController():
 	def __init__(self):
 		global ser
-		ser = serial.Serial('/dev/ttyAMA0',9600)
+		ser = serial.Serial('/dev/ttyAMA0',19200)
 		GPIO.setmode(GPIO.BOARD)
 		GPIO.setup(3,GPIO.OUT)
 		GPIO.setup(5,GPIO.OUT)
@@ -35,29 +35,35 @@ class BigController():
 		prevRotVal = 0
 		topValue = 100
 		bufferRotVal = 20
+		rotVal = 0
 		goX = 0
 		goY = 0
 		goR = 0
 		goT = 0
 		
-		print 'a'
 		while True:
 			t = ser.readline()
-			print t
 			if t[0] == 'x':
-				x = t[1:4]
+				x = t[1:5]
 				goX = 1
+				x = int(x)
+				x -= 1000
 			elif t[0] == 'y':
-				y = t[1:4]
+				y = t[1:5]
 				goY = 1
+				y = int(y)
+				y -= 1000
 			elif t[0] == 'r':
 				rotVal = t[1:4]
 				goR = 1
+				rotVal = int(rotVal)
+				rotVal -= 100
 			elif t[0] == 't':
 				throttle = t[1:4]
 				goT = 1 
-
-			if (goX == 1 and goY == 1) or goT == 1 or goR == 1:
+				throttle = int(throttle)
+				throttle -= 100
+			if (goX == 1 and goY == 1 and goT == 1 and goR == 1):
 
 				if rotVal - prevRotVal >=bufferRotVal:
 					rotVal = prevRotVal + bufferRotVal
@@ -200,16 +206,22 @@ class BigController():
 				rightf = int(rightf)
 				rightr = int(rightr)
 
-				print 'Leftf :%s Rightf :%s'%(leftf,rightf)
-				print 'Leftr :%s Rightr :%s'%(leftr,rightr)
+				#print 'Leftf :%s Rightf :%s'%(leftf,rightf)
+				#print 'Leftr :%s Rightr :%s'%(leftr,rightr)
+
+				print ("x : "+str(x)+" y : "+str(y))		
+				print("leftf : "+str(leftf)+" rightf : "+str(rightf))
+				print("leftr : "+str(leftr)+" rightr : "+str(rightr))
+				print("Throttle : "+str(throttle))
+				print("Rotation Value: "+str(rotVal))
 
 				p1.ChangeDutyCycle(leftf)
 				p2.ChangeDutyCycle(leftr)
 				p3.ChangeDutyCycle(rightf)
 				p4.ChangeDutyCycle(rightr)
 
-				time.sleep(0.2)
-
+				#time.sleep(0.2)
+				goX = goY = goT = goR = 0
 			
 
 
